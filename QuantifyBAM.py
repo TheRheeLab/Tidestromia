@@ -8,12 +8,21 @@ from sys import argv, exit, stderr, stdout
 
 # Function definitions
 
+def int_to_bits_str(x, nbits=12):
+    """Return a string of bits, least to most significant, from an int"""
+    
+    bits = list('{0:b}'.format(x))
+    bits.reverse()
+    bits = ''.join(bits)
+    bits += '0' * (nbits - len(bits))
+    return bits
+
 def check_flag(flag):
     """Check the SAM flag and return booleans indicating the type of mapping"""
-    flag = int(flag)
-    proper_pair = (flag >> 1) & 1
-    single = (flag >> 3) & 1
-    not_primary = (flag >> 8) & 1
+    flag = int_to_bits_str(int(flag))
+    proper_pair = flag[1] == '1'
+    single = (flag[0] == '0') or (flag[3] == '1')
+    not_primary = flag[8] == '1'
     return proper_pair, single, not_primary
 
 # Define all command-line arguments
